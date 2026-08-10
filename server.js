@@ -234,7 +234,7 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 3001;
 
 if (existsSync(distPath)) {
-  app.get('*', (req, res, next) => {
+  app.get('/{*splat}', (req, res, next) => {
     if (req.path.startsWith('/socket.io') || req.path.startsWith('/health')) {
       return next();
     }
