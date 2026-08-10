@@ -2,10 +2,25 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { existsSync } from 'fs';
 import { jeopardyRound } from './src/data/questions.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.join(__dirname, 'dist');
 
 const app = express();
 app.use(cors());
+
+if (existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
+
+app.get('/health', (_req, res) => {
+  res.json({ ok: true, status: 'healthy' });
+});
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -217,6 +232,16 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3001;
+
+if (existsSync(distPath)) {
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/socket.io') || req.path.startsWith('/health')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
 httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`Multiplayer Server running on port ${PORT}`);
 });
