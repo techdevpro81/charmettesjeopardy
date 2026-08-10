@@ -1,0 +1,50 @@
+:root {
+  --jeopardy-blue: #3b0615;      /* Rich Burgundy Wine */
+  --jeopardy-yellow: #e6c687;    /* Champagne Gold */
+  --jeopardy-gold: #c59b4e;      /* Metallic Heritage Gold */
+  --jeopardy-dark: #170207;      /* Deep Midnight Maroon */
+  --jeopardy-light: #fff8eb;     /* Warm Cream Light Text */
+  
+  font-family: 'Georgia', 'Garamond', 'Times New Roman', serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: var(--jeopardy-light);
+  background: radial-gradient(circle at 50% 30%, #350816 0%, #1f030a 60%, #0d0104 100%);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% 30%, #350816 0%, #1f030a 60%, #0d0104 100%);
+  background-attachment: fixed;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+}

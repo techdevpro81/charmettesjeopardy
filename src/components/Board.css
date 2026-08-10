@@ -1,0 +1,101 @@
+.board {
+  display: flex;
+  width: 100%;
+  max-width: 1350px;
+  margin: 0 auto;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(23, 2, 7, 0.88);
+  border: 4px solid #c59b4e;
+  border-radius: 14px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.95), 0 0 35px rgba(197, 155, 78, 0.45);
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+.category-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.category-header {
+  background: linear-gradient(180deg, #fcebc2 0%, #e6c687 50%, #c59b4e 100%);
+  color: #2b040e;
+  font-family: 'Georgia', serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  height: 85px;
+  border: 2px solid #fff3d6;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.clue-cell {
+  background: linear-gradient(180deg, #3d0617 0%, #20020a 100%);
+  color: #ffffff;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  font-size: 2.8rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 85px;
+  cursor: pointer;
+  border: 2px solid #c59b4e;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(197, 155, 78, 0.2);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9), 0 0 12px rgba(230, 198, 135, 0.5);
+  transition: all 0.25s ease-in-out;
+  user-select: none;
+  position: relative;
+}
+
+.clue-cell::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  border: 1px solid rgba(230, 198, 135, 0.35);
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+.clue-cell:hover:not(.answered) {
+  border-color: #fff3d6;
+  background: linear-gradient(180deg, #5c0b24 0%, #3d0617 100%);
+  box-shadow: 0 8px 25px rgba(197, 155, 78, 0.6), 0 0 18px rgba(255, 243, 214, 0.4);
+  transform: translateY(-2px);
+  color: #fff8eb;
+  text-shadow: 0 0 15px rgba(255, 243, 214, 0.9);
+}
+
+.clue-cell:active:not(.answered) {
+  transform: translateY(0);
+}
+
+.clue-cell.answered {
+  background: rgba(23, 2, 7, 0.4);
+  border-color: rgba(197, 155, 78, 0.15);
+  box-shadow: none;
+  color: transparent;
+  text-shadow: none;
+  cursor: default;
+  transform: none !important;
+}
+
+.clue-cell.answered::before {
+  border-color: transparent;
+}
