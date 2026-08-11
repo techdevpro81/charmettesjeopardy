@@ -118,16 +118,16 @@ function App() {
             {activeClue ? (
               // If there's an active clue, display clue text, answer (for host), and buzzer controls
               <div className="active-clue-screen">
-                <h2 style={{ color: '#e6c687', fontSize: '2.2rem', marginBottom: '10px' }}>
+                <h2 style={{ color: '#e6c687', fontSize: '1.5rem', marginBottom: '8px' }}>
                   {activeClue.categoryName} - ${activeClue.value}
                 </h2>
 
-                <div className="clue-content" style={{ margin: '20px 0', padding: '24px', background: 'rgba(15, 2, 6, 0.85)', borderRadius: '12px', border: '2px solid #c59b4e', maxWidth: '800px', boxShadow: '0 8px 25px rgba(0,0,0,0.8)' }}>
-                  <p style={{ fontSize: '1.75rem', color: '#ffffff', lineHeight: '1.4', fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+                <div className="clue-content" style={{ margin: '10px 0', padding: '16px', background: 'rgba(15, 2, 6, 0.85)', borderRadius: '10px', border: '2px solid #c59b4e', maxWidth: '700px', boxShadow: '0 8px 25px rgba(0,0,0,0.8)' }}>
+                  <p style={{ fontSize: '1.15rem', color: '#ffffff', lineHeight: '1.35', fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
                     "{activeClue.clue}"
                   </p>
                   {amIHost && activeClue.answer && (
-                    <div style={{ marginTop: '20px', color: '#e6c687', fontStyle: 'italic', fontSize: '1.2rem', borderTop: '1px dashed rgba(230,198,135,0.5)', paddingTop: '12px' }}>
+                    <div style={{ marginTop: '10px', color: '#e6c687', fontStyle: 'italic', fontSize: '1rem', borderTop: '1px dashed rgba(230,198,135,0.5)', paddingTop: '8px' }}>
                       <strong>Answer:</strong> {activeClue.answer}
                     </div>
                   )}
@@ -137,7 +137,7 @@ function App() {
                   <div className="host-controls">
                     {gameState.buzzedPlayerId ? (
                       <div className="buzzer-status">
-                        <h3 style={{ color: '#e6c687', fontSize: '1.4rem', marginBottom: '12px' }}>
+                        <h3 style={{ color: '#e6c687', fontSize: '1.1rem', marginBottom: '8px' }}>
                           Player Buzzed: <span style={{ color: '#fff', textDecoration: 'underline' }}>{gameState.players.find(p => p.id === gameState.buzzedPlayerId)?.name}</span>
                         </h3>
                         <div className="judge-buttons">
@@ -147,7 +147,7 @@ function App() {
                       </div>
                     ) : (
                       <div className="buzzer-status">
-                        <p style={{ color: 'rgba(230,198,135,0.8)', fontSize: '1.1rem', marginBottom: '15px' }}>Waiting for players to buzz in on their devices...</p>
+                        <p style={{ color: 'rgba(230,198,135,0.8)', fontSize: '0.95rem', marginBottom: '10px' }}>Waiting for players to buzz in on their devices...</p>
                         <button className="close-clue-btn" onClick={() => { stopClueNarration(); socket.emit('closeClue'); }}>Close Clue (No Answer)</button>
                       </div>
                     )}
@@ -156,11 +156,11 @@ function App() {
                   <div className="player-buzzer">
                     {gameState.buzzedPlayerId ? (
                        gameState.buzzedPlayerId === socket.id ? 
-                       <h3 style={{color: '#4CAF50', fontSize: '1.6rem', textShadow: '0 0 10px rgba(76,175,80,0.5)'}}>You buzzed in! Speak your answer to the host.</h3> :
-                       <h3 style={{color: '#F44336', fontSize: '1.4rem'}}>{gameState.players.find(p => p.id === gameState.buzzedPlayerId)?.name} buzzed first!</h3>
+                       <h3 style={{color: '#4CAF50', fontSize: '1.2rem', textShadow: '0 0 10px rgba(76,175,80,0.5)'}}>You buzzed in! Speak your answer to the host.</h3> :
+                       <h3 style={{color: '#F44336', fontSize: '1.1rem'}}>{gameState.players.find(p => p.id === gameState.buzzedPlayerId)?.name} buzzed first!</h3>
                     ) : (
                       myPlayer?.hasBuzzed ? 
-                      <h3 style={{color: '#888', fontSize: '1.2rem'}}>You answered incorrectly for this clue.</h3> :
+                      <h3 style={{color: '#888', fontSize: '1rem'}}>You answered incorrectly for this clue.</h3> :
                       <button className="buzz-btn" onClick={() => socket.emit('buzzIn')}>BUZZ IN!</button>
                     )}
                   </div>
