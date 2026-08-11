@@ -1,5 +1,5 @@
 import { jeopardyRound } from '../src/data/questions.js';
-import { loadGameState, saveGameState, defaultGameState, sanitizeState } from './gameStore.js';
+import { loadGameState, saveGameState, defaultGameState, sanitizeState, touchPlayer, pruneStale } from './gameStore.js';
 
 function nextId() {
   return Date.now() + Math.random();
@@ -18,7 +18,15 @@ export default async function handler(req, res) {
   let gameState = await loadGameState();
   const clientId = req.query.clientId || req.body?.clientId || `client-${Date.now()}`;
 
+  // Heartbeat: mark this client as active and prune stale players
+  touchPlayer(gameState, clientId);
+  const pruned = pruneStale(gameState);
+
   if (req.method === 'GET') {
+    // Save if we pruned stale players
+    if (pruned) {
+      await saveGameState(gameState);
+    }
     return res.status(200).json({ state: sanitizeState(gameState) });
   }
 
@@ -34,7 +42,16 @@ export default async function handler(req, res) {
 
   if (event === 'joinGame') {
     const { name, isHost } = payload || {};
-    if (gameState.players.find((p) => p.isHost) && isHost) {
+
+    // Check if this client is already in the game
+    const existing = gameState.players.find((p) => p.id === clientId);
+    if (existing) {
+      existing.lastSeen = Date.now();
+      await saveGameState(gameState);
+      return res.status(200).json({ state: sanitizeState(gameState) });
+    }
+
+    if (isHost && gameState.players.find((p) => p.isHost)) {
       return res.status(200).json({ error: 'A host already exists for this game.' });
     }
 
@@ -43,7 +60,8 @@ export default async function handler(req, res) {
       name,
       score: 0,
       isHost,
-      hasBuzzed: false
+      hasBuzzed: false,
+      lastSeen: Date.now()
     };
 
     gameState.players.push(newPlayer);

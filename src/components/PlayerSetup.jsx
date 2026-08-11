@@ -81,15 +81,39 @@ const PlayerSetup = ({ gameState }) => {
           {errorMsg && <div className="error-message" style={{ color: '#ff5277', fontSize: '16pt', marginBottom: '10px' }}>{errorMsg}</div>}
           <div className="input-group">
             <label htmlFor="playerNameInput">Your Name</label>
-            <input 
-              id="playerNameInput"
-              type="text" 
-              value={playerName} 
-              onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="Enter your name"
-              maxLength={20}
-              required
-            />
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <input 
+                id="playerNameInput"
+                type="text" 
+                value={playerName} 
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder="Enter your name"
+                maxLength={20}
+                required
+                style={{ paddingRight: '36px' }}
+              />
+              {playerName && (
+                <button
+                  type="button"
+                  onClick={() => setPlayerName('')}
+                  aria-label="Clear name"
+                  style={{
+                    position: 'absolute',
+                    right: '8px',
+                    background: 'none',
+                    border: 'none',
+                    color: '#e6c687',
+                    fontSize: '1.2rem',
+                    cursor: 'pointer',
+                    padding: '2px 6px',
+                    lineHeight: 1,
+                    opacity: 0.7
+                  }}
+                  onMouseEnter={(e) => e.target.style.opacity = 1}
+                  onMouseLeave={(e) => e.target.style.opacity = 0.7}
+                >✕</button>
+              )}
+            </div>
           </div>
           
           <div className="checkbox-group">
