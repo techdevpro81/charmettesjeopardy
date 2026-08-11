@@ -95,7 +95,7 @@ const IntroScreen = ({ onStart }) => {
         </button>
 
         <div className="heritage-footer-text">
-          © 2024 THE CHARMETTES, INCORPORATED | ALL RIGHTS RESERVED
+          © 2026 THE CHARMETTES, INCORPORATED | ALL RIGHTS RESERVED
         </div>
       </div>
     </div>

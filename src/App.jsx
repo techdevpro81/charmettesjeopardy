@@ -239,7 +239,7 @@ function App() {
           <button className="pill-btn" onClick={() => setShowHelp(true)}>HELP</button>
         </div>
         <div className="copyright-text">
-          © 2024 THE CHARMETTES, INCORPORATED | ALL RIGHTS RESERVED
+          © 2026 THE CHARMETTES, INCORPORATED | ALL RIGHTS RESERVED
         </div>
       </div>
       
