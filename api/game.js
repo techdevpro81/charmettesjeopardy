@@ -1,22 +1,8 @@
-const { jeopardyRound } = await import('../src/data/questions.js');
-
-let gameState = {
-  phase: 'SETUP',
-  players: [],
-  activeClue: null,
-  buzzedPlayerId: null,
-  chatMessages: [
-    { id: 1, sender: 'System', text: 'Welcome to The Charmettes, Incorporated Jeopardy!' }
-  ],
-  boardState: {}
-};
+import { jeopardyRound } from '../src/data/questions.js';
+import { loadGameState, saveGameState, defaultGameState, sanitizeState } from './gameStore.js';
 
 function nextId() {
   return Date.now() + Math.random();
-}
-
-function sendGameState() {
-  return gameState;
 }
 
 export default async function handler(req, res) {
@@ -29,10 +15,11 @@ export default async function handler(req, res) {
     return;
   }
 
+  let gameState = await loadGameState();
   const clientId = req.query.clientId || req.body?.clientId || `client-${Date.now()}`;
 
   if (req.method === 'GET') {
-    return res.status(200).json({ state: sendGameState() });
+    return res.status(200).json({ state: sanitizeState(gameState) });
   }
 
   if (req.method !== 'POST') {
@@ -66,7 +53,8 @@ export default async function handler(req, res) {
       text: `${name} has joined the game${isHost ? ' as Host' : ''}.`
     });
 
-    return res.status(200).json({ state: sendGameState() });
+    await saveGameState(gameState);
+    return res.status(200).json({ state: sanitizeState(gameState) });
   }
 
   if (event === 'startGame') {
@@ -78,7 +66,8 @@ export default async function handler(req, res) {
         sender: 'System',
         text: 'The Host has started the game! Good luck!'
       });
-      return res.status(200).json({ state: sendGameState() });
+      await saveGameState(gameState);
+      return res.status(200).json({ state: sanitizeState(gameState) });
     }
     return res.status(200).json({ error: 'Only the host can start the game.' });
   }
@@ -108,7 +97,8 @@ export default async function handler(req, res) {
         text: `Host selected ${categoryName} for $${value}.`
       });
 
-      return res.status(200).json({ state: sendGameState() });
+      await saveGameState(gameState);
+      return res.status(200).json({ state: sanitizeState(gameState) });
     }
     return res.status(200).json({ error: 'Only the host can select a clue.' });
   }
@@ -123,9 +113,10 @@ export default async function handler(req, res) {
         sender: 'System',
         text: `${player.name} buzzed in!`
       });
-      return res.status(200).json({ state: sendGameState() });
+      await saveGameState(gameState);
+      return res.status(200).json({ state: sanitizeState(gameState) });
     }
-    return res.status(200).json({ state: sendGameState() });
+    return res.status(200).json({ state: sanitizeState(gameState) });
   }
 
   if (event === 'resolveAnswer') {
@@ -146,7 +137,8 @@ export default async function handler(req, res) {
             sender: 'System',
             text: `${targetPlayer.name} answered correctly and won $${clueValue}!`
           });
-          return res.status(200).json({ state: sendGameState(), event: 'answerResolved', payload: { playerId, isCorrect, playerName: targetPlayer.name, value: clueValue } });
+          await saveGameState(gameState);
+          return res.status(200).json({ state: sanitizeState(gameState), event: 'answerResolved', payload: { playerId, isCorrect, playerName: targetPlayer.name, value: clueValue } });
         }
 
         targetPlayer.score -= clueValue;
@@ -156,7 +148,8 @@ export default async function handler(req, res) {
           sender: 'System',
           text: `${targetPlayer.name} answered incorrectly. Buzzer is open!`
         });
-        return res.status(200).json({ state: sendGameState(), event: 'answerResolved', payload: { playerId, isCorrect, playerName: targetPlayer.name, value: clueValue } });
+        await saveGameState(gameState);
+        return res.status(200).json({ state: sanitizeState(gameState), event: 'answerResolved', payload: { playerId, isCorrect, playerName: targetPlayer.name, value: clueValue } });
       }
     }
     return res.status(200).json({ error: 'Only the host can resolve answers.' });
@@ -170,7 +163,8 @@ export default async function handler(req, res) {
       }
       gameState.activeClue = null;
       gameState.buzzedPlayerId = null;
-      return res.status(200).json({ state: sendGameState() });
+      await saveGameState(gameState);
+      return res.status(200).json({ state: sanitizeState(gameState) });
     }
     return res.status(200).json({ error: 'Only the host can close a clue.' });
   }
@@ -183,24 +177,20 @@ export default async function handler(req, res) {
         sender: player.name,
         text: payload.trim()
       });
-      return res.status(200).json({ state: sendGameState() });
+      await saveGameState(gameState);
+      return res.status(200).json({ state: sanitizeState(gameState) });
     }
-    return res.status(200).json({ state: sendGameState() });
+    return res.status(200).json({ state: sanitizeState(gameState) });
   }
 
   if (event === 'resetGame') {
-    gameState = {
-      phase: 'SETUP',
-      players: [],
-      activeClue: null,
-      buzzedPlayerId: null,
-      chatMessages: [
-        { id: nextId(), sender: 'System', text: 'The game has been reset.' }
-      ],
-      boardState: {}
-    };
-    return res.status(200).json({ state: sendGameState() });
+    gameState = defaultGameState();
+    gameState.chatMessages = [
+      { id: nextId(), sender: 'System', text: 'The game has been reset.' }
+    ];
+    await saveGameState(gameState);
+    return res.status(200).json({ state: sanitizeState(gameState) });
   }
 
-  return res.status(200).json({ state: sendGameState() });
+  return res.status(200).json({ state: sanitizeState(gameState) });
 }
